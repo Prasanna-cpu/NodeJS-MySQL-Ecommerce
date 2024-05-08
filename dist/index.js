@@ -13,7 +13,18 @@ app.get("/", (req, res) => {
 export const prismaClient = new PrismaClient({
     log: ['query']
 });
-console.log(process.env.JWT_SECRET);
+// .$extends({
+//     query:{
+//         user:{
+//       create({ args, query }) {
+//         const { name, email, password } = SignUpSchema.parse(args.data);
+//         const userData = { name, email, password };
+//         return query({ data: userData });
+//       },
+//         }
+//     }
+// })
+// console.log(process.env.JWT_SECRET)
 app.use(errorMiddleware);
 app.listen(process.env.PORT, () => {
     console.log(`Listening at ${process.env.PORT}`);

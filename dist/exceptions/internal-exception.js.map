@@ -1,0 +1,1 @@
+{"version":3,"file":"internal-exception.js","sourceRoot":"","sources":["../../src/exceptions/internal-exception.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,WAAW,CAAC;AAE1C,MAAM,OAAO,iBAAkB,SAAQ,aAAa;IAChD,YAAY,OAAc,EAAC,SAAoB;QAC3C,KAAK,CAAC,OAAO,EAAC,SAAS,EAAC,GAAG,EAAC,IAAI,CAAC,CAAA;IAErC,CAAC;CACJ"}

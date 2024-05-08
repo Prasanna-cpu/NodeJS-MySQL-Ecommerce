@@ -1,14 +1,20 @@
 import { prismaClient } from "../index.js";
-import { hashSync } from "bcrypt";
-export const SignUp = async (req, res) => {
+import { hashSync, compareSync } from "bcrypt";
+import jwt from "jsonwebtoken";
+import { BadRequestException } from "../exceptions/bad-request.js";
+import { ErrorCodes } from "../exceptions/root.js";
+export const SignUp = async (req, res, next) => {
     const { email, password, name } = req.body;
+    if (!email || !password || !name) {
+        throw new BadRequestException("Please Fill all the fields!", ErrorCodes.INCOMPLETE_REQUEST);
+    }
     let user = await prismaClient.user.findFirst({
         where: {
             email: email
         }
     });
     if (user) {
-        throw Error("User already exists , Login instead");
+        next(new BadRequestException("User Not Found!", ErrorCodes.USER_NOT_FOUND));
     }
     else {
         let user = await prismaClient.user.create({
@@ -21,7 +27,27 @@ export const SignUp = async (req, res) => {
         return res.status(201).json({ user: user, message: "Created" });
     }
 };
-export const Login = (req, res) => {
-    res.send("Login");
+export const Login = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res
+            .status(400)
+            .json({ message: "Please provide all the fields" });
+    }
+    let user = await prismaClient.user.findFirst({
+        where: {
+            email: email,
+        },
+    });
+    if (!user) {
+        throw Error("User does not exist . SignUp and then Login");
+    }
+    else if (!compareSync(password, user.password)) {
+        throw Error("Incorrect password");
+    }
+    let token = jwt.sign({
+        userId: user.id
+    }, process.env.JWT_SECRET);
+    return res.status(201).json({ user: user, message: "Signed in", token: token });
 };
 //# sourceMappingURL=auth.js.map
